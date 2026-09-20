@@ -1,0 +1,19 @@
+name: what2eat
+services:
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: what2eat
+      POSTGRES_DB: what2eat
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?请先运行 scripts/configure-local.ps1}
+    ports:
+      - "127.0.0.1:55432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U what2eat -d what2eat"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+volumes:
+  postgres_data:

@@ -1,0 +1,22 @@
+.env
+.env.*
+!.env.example
+var/
+.superpowers/
+__pycache__/
+.pytest_cache/
+*.egg-info/
+node_modules/
+dist/
+test-results/
+playwright-report/
+.agents/
+tmp/
+
+# 本机开发与验收文件，不随运行代码上传
+/tests/
+/scripts/
+/docs/
+/frontend/tests/
+/frontend/e2e/
+/frontend/playwright.config.ts

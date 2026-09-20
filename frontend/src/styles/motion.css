@@ -1,0 +1,26 @@
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes slide-in {
+  from { transform: translateX(28px); opacity: .3; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes modal-in {
+  from { transform: translateY(10px) scale(.985); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+
+.chat-page, .recipe-workspace { animation: rise-in 320ms ease-out both; }
+.recipe-modal { animation: modal-in 200ms ease-out both; }
+.source-drawer { animation: slide-in 230ms ease-out both; }
+.bubble { animation: rise-in 180ms ease-out both; }
+button, a, .recipe-card { transition: color 150ms ease, background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease; }
+button:active:not(:disabled) { transform: translateY(2px); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation: none !important; transition: none !important; }
+  button:active:not(:disabled) { transform: none; }
+}

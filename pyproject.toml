@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "what2eat"
+version = "0.1.0"
+description = "吃神马：有来源、会记忆的厨房助手"
+requires-python = ">=3.13"
+dependencies = [
+  "fastapi==0.135.1", "uvicorn==0.46.0", "pydantic==2.12.5",
+  "pydantic-settings==2.12.0", "python-multipart==0.0.32",
+  "langchain==1.2.12", "langchain-core==1.2.18", "langchain-openai==1.1.11",
+  "langchain-text-splitters==1.1.1", "langchain-milvus==0.3.3",
+  "openai==2.26.0", "pymilvus==2.6.12", "milvus-lite==3.2.1",
+  "psycopg[binary,pool]==3.3.3", "psycopg-pool==3.3.0",
+  "langgraph-checkpoint-postgres==3.0.5", "pypdf==6.10.2", "python-docx==1.2.0",
+  "tiktoken==0.12.0", "httpx==0.28.1", "rank-bm25>=0.2.2,<0.3", "jieba>=0.42.1,<0.43",
+]
+
+[project.optional-dependencies]
+dev = ["pytest==9.0.3", "pytest-asyncio>=1.3,<2"]
+
+[project.scripts]
+what2eat = "what2eat.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["backend"]
+[tool.setuptools.package-data]
+what2eat = ["db/migrations/*.sql"]
+[tool.pytest.ini_options]
+pythonpath = ["backend"]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+filterwarnings = ["ignore:pkg_resources is deprecated as an API:UserWarning:jieba._compat"]
