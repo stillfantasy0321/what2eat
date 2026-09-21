@@ -26,7 +26,7 @@ export function useRecipes() {
     finally { loading.value = false }
   }
 
-  async function remove(recipe: Recipe) {
+  async function remove(recipe: Pick<Recipe, 'id'>) {
     deletingId.value = recipe.id
     error.value = ''
     try {

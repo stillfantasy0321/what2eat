@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { cleanRecipeMarkdown, renderMarkdown } from '../lib/markdown'
 
 const props = defineProps<{
@@ -9,10 +9,17 @@ const props = defineProps<{
   sourceUrl?: string | null
   busy?: boolean
   error?: string
+  deleting?: boolean
+  deleteError?: string
 }>()
-defineEmits<{ close: [] }>()
+const emit = defineEmits<{ close: []; remove: [] }>()
 
 const html = computed(() => renderMarkdown(cleanRecipeMarkdown(props.markdown)))
+const confirmingDelete = ref(false)
+
+watch(() => [props.open, props.title], () => {
+  confirmingDelete.value = false
+})
 </script>
 
 <template>
@@ -31,10 +38,32 @@ const html = computed(() => renderMarkdown(cleanRecipeMarkdown(props.markdown)))
         <p v-else-if="error" class="error">{{ error }}</p>
         <article v-else class="markdown-body" v-html="html" />
       </div>
-      <footer v-if="sourceUrl" class="recipe-modal-foot">
-        <a class="source-link" :href="sourceUrl" target="_blank" rel="noopener noreferrer">
+      <footer class="recipe-modal-foot">
+        <a v-if="sourceUrl" class="source-link" :href="sourceUrl" target="_blank" rel="noopener noreferrer">
           打开原始来源 <span aria-hidden="true">↗</span>
         </a>
+        <section class="recipe-delete-zone" aria-label="删除菜谱">
+          <template v-if="!confirmingDelete">
+            <div>
+              <strong>删除菜谱</strong>
+              <p>不再需要这道菜时，可以将它从菜谱库移除。</p>
+            </div>
+            <button type="button" class="danger" @click="confirmingDelete = true">删除菜谱</button>
+          </template>
+          <template v-else>
+            <div>
+              <strong>确认删除「{{ title }}」？</strong>
+              <p>原文和检索索引都会被删除，此操作无法撤销。</p>
+            </div>
+            <div class="recipe-delete-actions">
+              <button type="button" class="secondary" :disabled="deleting" @click="confirmingDelete = false">取消</button>
+              <button type="button" class="danger" data-action="confirm-delete" :disabled="deleting" @click="emit('remove')">
+                {{ deleting ? '正在删除…' : '确认删除' }}
+              </button>
+            </div>
+          </template>
+          <p v-if="deleteError" class="error recipe-delete-error">{{ deleteError }}</p>
+        </section>
       </footer>
     </section>
     </div>
