@@ -8,6 +8,7 @@ export function useRecipes() {
   const page = ref(1), pageSize = ref(12), total = ref(0), totalPages = ref(0)
   const activeCategory = ref('')
   const loading = ref(false)
+  const deletingId = ref('')
   const error = ref('')
   async function load(options: { category?: string; page?: number } = {}) {
     loading.value = true; error.value = ''
@@ -24,5 +25,23 @@ export function useRecipes() {
     } catch (reason) { error.value = reason instanceof Error ? reason.message : '菜谱读取失败' }
     finally { loading.value = false }
   }
-  return { recipes, categories, page, pageSize, total, totalPages, activeCategory, loading, error, load }
+
+  async function remove(recipe: Recipe) {
+    deletingId.value = recipe.id
+    error.value = ''
+    try {
+      await api(`/api/recipes/${recipe.id}`, { method: 'DELETE' })
+      const deletingLastInCategory = Boolean(activeCategory.value) && total.value === 1
+      const targetPage = recipes.value.length === 1 && page.value > 1 ? page.value - 1 : page.value
+      await load({ category: deletingLastInCategory ? '' : activeCategory.value, page: targetPage })
+    } catch (reason) {
+      error.value = reason instanceof Error ? reason.message : '菜谱删除失败'
+      throw reason
+    } finally {
+      deletingId.value = ''
+    }
+  }
+
+  return { recipes, categories, page, pageSize, total, totalPages, activeCategory,
+    loading, deletingId, error, load, remove }
 }

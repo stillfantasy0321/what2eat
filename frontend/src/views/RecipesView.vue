@@ -3,6 +3,7 @@ import { onMounted, ref } from 'vue'
 import { api } from '../api/client'
 import type { Recipe } from '../api/types'
 import PaginationBar from '../components/PaginationBar.vue'
+import ConfirmDialog from '../components/ConfirmDialog.vue'
 import RecipeCard from '../components/RecipeCard.vue'
 import RecipeModal from '../components/RecipeModal.vue'
 import { useRecipes } from '../composables/useRecipes'
@@ -11,6 +12,8 @@ const recipes = useRecipes()
 const uploadBusy = ref(false)
 const uploadError = ref('')
 const uploadNotice = ref('')
+const deleteNotice = ref('')
+const pendingDelete = ref<Recipe | null>(null)
 const modal = ref({
   open: false, title: '', markdown: '', sourceUrl: null as string | null,
   busy: false, error: '',
@@ -35,6 +38,7 @@ async function upload(event: Event) {
   uploadBusy.value = true
   uploadError.value = ''
   uploadNotice.value = ''
+  deleteNotice.value = ''
   const form = new FormData()
   form.append('file', file)
   try {
@@ -46,6 +50,24 @@ async function upload(event: Event) {
   } finally {
     uploadBusy.value = false
     input.value = ''
+  }
+}
+
+function requestDelete(recipe: Recipe) {
+  pendingDelete.value = recipe
+  uploadNotice.value = ''
+  deleteNotice.value = ''
+}
+
+async function confirmDelete() {
+  const recipe = pendingDelete.value
+  if (!recipe) return
+  try {
+    await recipes.remove(recipe)
+    deleteNotice.value = `「${recipe.title}」已从菜谱列表移除，后台正在清理检索索引。`
+    pendingDelete.value = null
+  } catch {
+    // useRecipes exposes the API error next to the recipe list.
   }
 }
 
@@ -67,7 +89,7 @@ onMounted(() => recipes.load({ page: 1 }))
     </header>
 
     <p v-if="uploadError" class="error">{{ uploadError }}</p>
-    <p v-else-if="uploadNotice" class="notice">{{ uploadNotice }}</p>
+    <p v-else-if="uploadNotice || deleteNotice" class="notice">{{ uploadNotice || deleteNotice }}</p>
 
     <section class="recipes-pane">
       <div class="category-tabs" aria-label="菜谱分类">
@@ -80,12 +102,18 @@ onMounted(() => recipes.load({ page: 1 }))
         还没有可用菜谱，请上传菜谱资料。
       </div>
       <div class="recipe-grid">
-        <RecipeCard v-for="recipe in recipes.recipes.value" :key="recipe.id" :recipe="recipe" @select="openRecipe" />
+        <RecipeCard v-for="recipe in recipes.recipes.value" :key="recipe.id" :recipe="recipe"
+                    :deleting="recipes.deletingId.value === recipe.id"
+                    @select="openRecipe" @remove="requestDelete" />
       </div>
       <PaginationBar :page="recipes.page.value" :total-pages="recipes.totalPages.value"
                      :busy="recipes.loading.value" @change="recipes.load({ page: $event })" />
     </section>
 
     <RecipeModal v-bind="modal" @close="modal.open = false" />
+    <ConfirmDialog :open="Boolean(pendingDelete)" title="删除这道菜谱？"
+                   :description="`「${pendingDelete?.title ?? ''}」的原文和检索索引都会被删除，此操作无法撤销。`"
+                   :busy="Boolean(recipes.deletingId.value)"
+                   @confirm="confirmDelete" @cancel="pendingDelete = null" />
   </div>
 </template>

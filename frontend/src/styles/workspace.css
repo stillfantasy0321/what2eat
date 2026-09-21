@@ -68,9 +68,12 @@
 .category-tabs button { min-height: 36px; padding: 6px 15px; border-color: var(--line); background: rgba(255,255,255,.82); color: var(--muted); font-size: 13px; }
 .category-tabs button.active { border-color: var(--navy); background: var(--navy); color: white; box-shadow: 3px 3px 0 var(--acid); }
 .recipe-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
-.recipe-card { position: relative; display: flex; flex-direction: column; justify-content: space-between; min-width: 0; min-height: 240px; padding: 22px; overflow: hidden; border-color: var(--line-strong); background: rgba(255,255,255,.96); text-align: left; }
+.recipe-card { position: relative; min-width: 0; min-height: 240px; overflow: hidden; border: 1px solid var(--line-strong); background: rgba(255,255,255,.96); text-align: left; }
 .recipe-card::after { position: absolute; right: -25px; bottom: -43px; width: 105px; height: 105px; border: 18px solid var(--sky); border-radius: 50%; content: ""; }
 .recipe-card:hover { z-index: 1; transform: translateY(-4px); border-color: var(--blue); box-shadow: var(--shadow-blue); }
+.recipe-card-open { position: relative; z-index: 1; display: flex; flex-direction: column; justify-content: space-between; width: 100%; min-height: 238px; padding: 22px; border: 0; background: transparent; text-align: left; }
+.recipe-delete { position: absolute; z-index: 2; top: 14px; right: 14px; min-height: 30px; padding: 3px 9px; border-color: #efb2ab; background: var(--danger-soft); color: var(--danger); font-size: 12px; }
+.recipe-delete:hover:not(:disabled) { border-color: var(--danger); background: var(--danger); color: white; }
 .recipe-card h3 { position: relative; z-index: 1; margin: 7px 0 11px; font-size: clamp(23px, 2.3vw, 31px); line-height: 1.16; letter-spacing: -.04em; }
 .recipe-card p { position: relative; z-index: 1; margin: 0; color: var(--muted); line-height: 1.65; }
 .recipe-card small, .recipe-index, .read-link { font-family: var(--mono); }
