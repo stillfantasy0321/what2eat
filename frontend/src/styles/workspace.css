@@ -106,11 +106,13 @@
 .markdown-body table { display: block; max-width: 100%; overflow-x: auto; border-collapse: collapse; }
 .markdown-body th, .markdown-body td { padding: 8px 11px; border: 1px solid var(--line-strong); }
 .recipe-modal-foot { display: grid; gap: 16px; padding: 16px clamp(22px, 4vw, 46px); border-top: 1px solid var(--line); background: rgba(247,249,252,.96); }
-.source-link { display: flex; align-items: center; justify-content: space-between; min-height: 48px; padding: 0 17px; border: 1px solid var(--blue); background: var(--blue); color: white; font-weight: 800; text-decoration: none; box-shadow: 5px 5px 0 var(--acid); }
+.recipe-modal-actions { display: flex; align-items: stretch; justify-content: flex-end; gap: 12px; }
+.source-link { display: flex; flex: 1; align-items: center; justify-content: space-between; min-height: 48px; padding: 0 17px; border: 1px solid var(--blue); background: var(--blue); color: white; font-weight: 800; text-decoration: none; box-shadow: 5px 5px 0 var(--acid); }
 .source-link:hover { background: var(--blue-dark); }
-.recipe-delete-zone { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 14px 22px; padding: 15px 17px; border: 1px solid #efb2ab; background: var(--danger-soft); }
-.recipe-delete-zone strong { display: block; color: #812d25; }
-.recipe-delete-zone p { margin: 4px 0 0; color: #8d514b; font-size: 13px; line-height: 1.5; }
+.recipe-delete-trigger { flex: 0 0 48px; width: 48px; min-height: 48px; padding: 0; font-size: 12px; font-weight: 800; }
+.recipe-delete-confirm { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 14px 22px; padding: 15px 17px; border: 1px solid #efb2ab; background: var(--danger-soft); }
+.recipe-delete-confirm strong { display: block; color: #812d25; }
+.recipe-delete-confirm p { margin: 4px 0 0; color: #8d514b; font-size: 13px; line-height: 1.5; }
 .recipe-delete-actions { display: flex; gap: 8px; }
 .recipe-delete-error { grid-column: 1 / -1; }
 
@@ -161,8 +163,8 @@
   .modal-backdrop { padding: 10px; }
   .recipe-modal { width: 100%; max-height: 92dvh; box-shadow: 6px 6px 0 var(--acid); }
   .recipe-modal-head, .recipe-modal-body, .recipe-modal-foot { padding-inline: 18px; }
-  .recipe-delete-zone { grid-template-columns: 1fr; }
-  .recipe-delete-zone > button, .recipe-delete-actions { width: 100%; }
+  .recipe-delete-confirm { grid-template-columns: 1fr; }
+  .recipe-delete-actions { width: 100%; }
   .recipe-delete-actions button { flex: 1; }
 }
 

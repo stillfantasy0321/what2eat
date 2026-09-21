@@ -39,29 +39,24 @@ watch(() => [props.open, props.title], () => {
         <article v-else class="markdown-body" v-html="html" />
       </div>
       <footer class="recipe-modal-foot">
-        <a v-if="sourceUrl" class="source-link" :href="sourceUrl" target="_blank" rel="noopener noreferrer">
-          打开原始来源 <span aria-hidden="true">↗</span>
-        </a>
-        <section class="recipe-delete-zone" aria-label="删除菜谱">
-          <template v-if="!confirmingDelete">
-            <div>
-              <strong>删除菜谱</strong>
-              <p>不再需要这道菜时，可以将它从菜谱库移除。</p>
-            </div>
-            <button type="button" class="danger" @click="confirmingDelete = true">删除菜谱</button>
-          </template>
-          <template v-else>
-            <div>
-              <strong>确认删除「{{ title }}」？</strong>
-              <p>原文和检索索引都会被删除，此操作无法撤销。</p>
-            </div>
-            <div class="recipe-delete-actions">
-              <button type="button" class="secondary" :disabled="deleting" @click="confirmingDelete = false">取消</button>
-              <button type="button" class="danger" data-action="confirm-delete" :disabled="deleting" @click="emit('remove')">
-                {{ deleting ? '正在删除…' : '确认删除' }}
-              </button>
-            </div>
-          </template>
+        <div class="recipe-modal-actions">
+          <a v-if="sourceUrl" class="source-link" :href="sourceUrl" target="_blank" rel="noopener noreferrer">
+            打开原始来源 <span aria-hidden="true">↗</span>
+          </a>
+          <button v-if="!confirmingDelete" type="button" class="danger recipe-delete-trigger"
+                  aria-label="删除菜谱" title="删除菜谱" @click="confirmingDelete = true">删除</button>
+        </div>
+        <section v-if="confirmingDelete" class="recipe-delete-confirm" aria-label="确认删除菜谱">
+          <div>
+            <strong>确认删除「{{ title }}」？</strong>
+            <p>原文和检索索引都会被删除，此操作无法撤销。</p>
+          </div>
+          <div class="recipe-delete-actions">
+            <button type="button" class="secondary" :disabled="deleting" @click="confirmingDelete = false">取消</button>
+            <button type="button" class="danger" data-action="confirm-delete" :disabled="deleting" @click="emit('remove')">
+              {{ deleting ? '正在删除…' : '确认删除' }}
+            </button>
+          </div>
           <p v-if="deleteError" class="error recipe-delete-error">{{ deleteError }}</p>
         </section>
       </footer>
